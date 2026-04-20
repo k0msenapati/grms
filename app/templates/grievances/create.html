@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block header_title %}Submit Grievance{% endblock %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <a href="/dashboard" class="text-sm text-gray-500 hover:text-purple-400 transition-colors flex items-center gap-1 mb-4">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Dashboard
+        </a>
+        <h1 class="text-3xl font-bold">New Grievance</h1>
+        <p class="text-gray-400">Please provide detailed information about your grievance.</p>
+    </div>
+
+    <form id="grievanceForm" method="post" enctype="multipart/form-data" class="space-y-6">
+        <div class="bg-[#020617] p-8 rounded-2xl border border-gray-800 shadow-sm space-y-6">
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Title</label>
+                <input name="title" type="text" required placeholder="Brief summary of the issue"
+                    class="w-full px-4 py-3 bg-[#0f172a] border border-gray-700 rounded-xl focus:outline-none focus:border-purple-500 transition-all text-white">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-400 mb-2">Category</label>
+                    <select name="category" required
+                        class="w-full px-4 py-3 bg-[#0f172a] border border-gray-700 rounded-xl focus:outline-none focus:border-purple-500 transition-all text-white appearance-none">
+                        <option value="Academic">Academic</option>
+                        <option value="Administrative">Administrative</option>
+                        <option value="Facilities">Facilities</option>
+                        <option value="Hostel">Hostel</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-400 mb-2">Priority</label>
+                    <select name="priority" required
+                        class="w-full px-4 py-3 bg-[#0f172a] border border-gray-700 rounded-xl focus:outline-none focus:border-purple-500 transition-all text-white appearance-none">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Detailed Description</label>
+                <textarea name="description" rows="6" required placeholder="Please describe your grievance in detail..."
+                    class="w-full px-4 py-3 bg-[#0f172a] border border-gray-700 rounded-xl focus:outline-none focus:border-purple-500 transition-all text-white resize-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Supporting Documents (Optional)</label>
+                <div class="relative border-2 border-dashed border-gray-800 rounded-2xl p-8 text-center hover:border-purple-500/50 transition-all cursor-pointer group">
+                    <input type="file" name="document" id="documentInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <i data-lucide="upload-cloud" class="w-10 h-10 text-gray-600 mx-auto mb-3 group-hover:text-purple-400 transition-colors"></i>
+                    <p id="fileName" class="text-sm text-gray-500">Click to upload or drag and drop</p>
+                    <p class="text-xs text-gray-600 mt-1">PDF, JPG, PNG up to 10MB</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-4">
+            <a href="/dashboard" class="px-6 py-3 text-gray-400 hover:text-white transition-colors">Cancel</a>
+            <button type="submit" id="submitBtn" class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-600/20 transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2">
+                <span>Submit Grievance</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[100] flex items-center justify-center">
+    <div class="bg-[#020617] p-8 rounded-2xl border border-gray-800 shadow-2xl text-center space-y-4">
+        <div class="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin mx-auto"></div>
+        <div>
+            <h3 class="text-xl font-bold text-white">Uploading...</h3>
+            <p class="text-gray-400 text-sm">Please wait while we process your request.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('grievanceForm');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const documentInput = document.getElementById('documentInput');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    documentInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            fileNameDisplay.textContent = e.target.files[0].name;
+            fileNameDisplay.classList.add('text-purple-400', 'font-medium');
+        } else {
+            fileNameDisplay.textContent = 'Click to upload or drag and drop';
+            fileNameDisplay.classList.remove('text-purple-400', 'font-medium');
+        }
+    });
+
+    form.addEventListener('submit', () => {
+        loadingOverlay.classList.remove('hidden');
+        document.getElementById('submitBtn').disabled = true;
+    });
+</script>
+
+{% endblock %}

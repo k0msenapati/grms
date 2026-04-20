@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block header_title %}Notifications{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold">Your Notifications</h1>
+            <p class="text-gray-400">Stay updated with your grievance progress.</p>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        {% for n in notifications %}
+        <div class="bg-[#020617] p-5 rounded-2xl border border-gray-800 flex gap-4 items-start shadow-sm transition-all hover:border-purple-500/30">
+            <div class="w-10 h-10 rounded-full bg-purple-600/10 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="bell" class="w-5 h-5 text-purple-500"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-200 leading-relaxed">{{ n.message }}</p>
+                <p class="text-xs text-gray-500 mt-2">{{ n.created_at.strftime('%b %d, %Y at %H:%M') }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-[#020617] p-12 rounded-2xl border border-gray-800 text-center text-gray-500">
+            <i data-lucide="bell-off" class="w-12 h-12 mx-auto mb-4 opacity-10"></i>
+            <p class="font-medium text-lg text-gray-400">No notifications yet</p>
+            <p class="text-sm">We'll notify you when your grievances are updated.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

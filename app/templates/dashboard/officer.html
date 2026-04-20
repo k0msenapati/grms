@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block header_title %}Officer Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-2xl font-bold">Welcome back, {{ user.name }}!</h1>
+    <p class="text-gray-400">Manage cases assigned to you.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="inbox" class="text-purple-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Total Assigned</p>
+            <h2 class="text-2xl font-bold">{{ stats.total }}</h2>
+        </div>
+    </div>
+
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="clock" class="text-yellow-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Pending Actions</p>
+            <h2 class="text-2xl font-bold text-yellow-400">{{ stats.pending }}</h2>
+        </div>
+    </div>
+
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="check-square" class="text-green-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Resolved Cases</p>
+            <h2 class="text-2xl font-bold text-green-400">{{ stats.resolved }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Assigned Grievances -->
+<div class="bg-[#020617] rounded-2xl border border-gray-800 overflow-hidden shadow-sm">
+    <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+        <h3 class="font-bold text-lg">Recently Assigned Cases</h3>
+        <a href="/grievances" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">View All</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="text-xs uppercase text-gray-500 bg-[#0f172a]/50">
+                    <th class="px-6 py-4 font-semibold">Title</th>
+                    <th class="px-6 py-4 font-semibold">Priority</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold">Created</th>
+                    <th class="px-6 py-4 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+                {% for g in recent %}
+                <tr class="hover:bg-[#0f172a]/30 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="font-medium group-hover:text-purple-400 transition-colors">{{ g.title }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                         {% if g.priority.value == 'urgent' %}
+                        <span class="px-2 py-1 bg-red-500/10 border border-red-500/30 rounded text-[10px] uppercase font-bold text-red-400">Urgent</span>
+                        {% elif g.priority.value == 'high' %}
+                        <span class="px-2 py-1 bg-orange-500/10 border border-orange-500/30 rounded text-[10px] uppercase font-bold text-orange-400">High</span>
+                        {% else %}
+                        <span class="px-2 py-1 bg-blue-500/10 border border-blue-500/30 rounded text-[10px] uppercase font-bold text-blue-400">{{ g.priority.value }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if g.status.value == 'submitted' %}
+                        <span class="text-blue-400 text-sm">Submitted</span>
+                        {% elif g.status.value == 'in_progress' %}
+                        <span class="text-yellow-400 text-sm">In Progress</span>
+                        {% elif g.status.value == 'resolved' %}
+                        <span class="text-green-400 text-sm">Resolved</span>
+                        {% else %}
+                        <span class="text-red-400 text-sm">Rejected</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ g.created_at.strftime('%b %d, %Y') }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="/grievances/{{ g.id }}" class="px-3 py-1 bg-purple-600/10 hover:bg-purple-600 text-purple-400 hover:text-white rounded-lg text-xs transition-all">
+                            Handle
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 opacity-20"></i>
+                        <p>No assigned cases found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

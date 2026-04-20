@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block header_title %}User Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-2xl font-bold">Welcome back, {{ user.name }}!</h1>
+    <p class="text-gray-400">Here's an overview of your grievances.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="file-text" class="text-blue-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Total Submitted</p>
+            <h2 class="text-2xl font-bold">{{ stats.total }}</h2>
+        </div>
+    </div>
+
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="clock" class="text-yellow-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Pending Resolution</p>
+            <h2 class="text-2xl font-bold text-yellow-400">{{ stats.pending }}</h2>
+        </div>
+    </div>
+
+    <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 flex items-center gap-5 shadow-sm">
+        <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="check-circle" class="text-green-500"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-400">Resolved</p>
+            <h2 class="text-2xl font-bold text-green-400">{{ stats.resolved }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Grievances -->
+<div class="bg-[#020617] rounded-2xl border border-gray-800 overflow-hidden shadow-sm">
+    <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+        <h3 class="font-bold text-lg">Recent Grievances</h3>
+        <a href="/grievances" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">View All</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="text-xs uppercase text-gray-500 bg-[#0f172a]/50">
+                    <th class="px-6 py-4 font-semibold">Title</th>
+                    <th class="px-6 py-4 font-semibold">Category</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold">Created</th>
+                    <th class="px-6 py-4 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+                {% for g in recent %}
+                <tr class="hover:bg-[#0f172a]/30 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="font-medium group-hover:text-purple-400 transition-colors">{{ g.title }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300">{{ g.category }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if g.status.value == 'submitted' %}
+                        <span class="flex items-center gap-1.5 text-blue-400 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Submitted
+                        </span>
+                        {% elif g.status.value == 'in_progress' %}
+                        <span class="flex items-center gap-1.5 text-yellow-400 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span> In Progress
+                        </span>
+                        {% elif g.status.value == 'resolved' %}
+                        <span class="flex items-center gap-1.5 text-green-400 text-sm">
+                            <i data-lucide="check" class="w-4 h-4"></i> Resolved
+                        </span>
+                        {% else %}
+                        <span class="flex items-center gap-1.5 text-red-400 text-sm">
+                             <i data-lucide="x" class="w-4 h-4"></i> Rejected
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ g.created_at.strftime('%b %d, %Y') }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="/grievances/{{ g.id }}" class="text-gray-400 hover:text-white transition-colors">
+                            <i data-lucide="eye" class="w-5 h-5 ml-auto"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                        <i data-lucide="file-question" class="w-12 h-12 mx-auto mb-3 opacity-20"></i>
+                        <p>No grievances found. <a href="/grievances/create" class="text-purple-400 hover:underline">Submit one now</a>.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

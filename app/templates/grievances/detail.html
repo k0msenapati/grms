@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block header_title %}Grievance Details{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <a href="/grievances" class="text-sm text-gray-500 hover:text-purple-400 transition-colors flex items-center gap-1 mb-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to List
+            </a>
+            <h1 class="text-3xl font-bold flex items-center gap-4">
+                {{ g.title }}
+                <span class="text-sm font-normal px-2 py-1 bg-gray-800 rounded border border-gray-700 text-gray-500">#{{ g.id }}</span>
+            </h1>
+        </div>
+        
+        <div class="flex items-center gap-3">
+             {% if g.status.value == 'submitted' %}
+            <span class="px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full text-sm font-semibold border border-blue-500/20 flex items-center gap-2">
+                <i data-lucide="send" class="w-4 h-4"></i> Submitted
+            </span>
+            {% elif g.status.value == 'in_progress' %}
+            <span class="px-4 py-1.5 bg-yellow-500/10 text-yellow-400 rounded-full text-sm font-semibold border border-yellow-500/20 flex items-center gap-2">
+                <i data-lucide="clock" class="w-4 h-4"></i> In Progress
+            </span>
+            {% elif g.status.value == 'resolved' %}
+            <span class="px-4 py-1.5 bg-green-500/10 text-green-400 rounded-full text-sm font-semibold border border-green-500/20 flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> Resolved
+            </span>
+            {% else %}
+            <span class="px-4 py-1.5 bg-red-500/10 text-red-400 rounded-full text-sm font-semibold border border-red-500/20 flex items-center gap-2">
+                <i data-lucide="x-circle" class="w-4 h-4"></i> Rejected
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Main Info -->
+        <div class="md:col-span-2 space-y-8">
+            <div class="bg-[#020617] p-8 rounded-2xl border border-gray-800 shadow-sm">
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Description</h3>
+                <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ g.description }}</p>
+                
+                <div class="mt-10 pt-10 border-t border-gray-800 grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Category</p>
+                        <p class="text-sm font-medium">{{ g.category }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Priority</p>
+                        <p class="text-sm font-medium capitalize">{{ g.priority.value }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Submitted On</p>
+                        <p class="text-sm font-medium">{{ g.created_at.strftime('%d %b %Y') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Assigned To</p>
+                        <p class="text-sm font-medium">{{ g.assigned_to if g.assigned_to else 'Unassigned' }}</p>
+                    </div>
+                </div>
+
+                {% if g.document_path %}
+                <div class="mt-8 p-4 bg-purple-600/5 border border-purple-500/20 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="file-text" class="text-purple-400"></i>
+                        <div>
+                            <p class="text-sm font-medium">Supporting Document</p>
+                            <p class="text-xs text-gray-500">View attached evidence</p>
+                        </div>
+                    </div>
+                    <a href="/{{ g.document_path }}" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-all">
+                        Download / View
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if g.resolution_note %}
+            <div class="bg-green-500/5 p-8 rounded-2xl border border-green-500/20 shadow-sm">
+                <div class="flex items-center gap-2 mb-4 text-green-400">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    <h3 class="font-bold">Resolution Note</h3>
+                </div>
+                <p class="text-gray-300 leading-relaxed">{{ g.resolution_note }}</p>
+                <p class="text-xs text-gray-500 mt-4">Resolved on {{ g.resolved_at.strftime('%d %b %Y at %H:%M') if g.resolved_at else 'N/A' }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Timeline/Activity (Mock) -->
+            <div class="bg-[#020617] p-8 rounded-2xl border border-gray-800 shadow-sm">
+                <h3 class="font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-gray-500"></i> Activity Timeline
+                </h3>
+                <div class="space-y-6 relative before:absolute before:left-[17px] before:top-2 before:bottom-2 before:w-px before:bg-gray-800">
+                    <div class="relative pl-10">
+                        <div class="absolute left-0 top-1 w-9 h-9 bg-blue-500/10 rounded-full border border-blue-500/30 flex items-center justify-center z-10">
+                            <i data-lucide="plus" class="w-4 h-4 text-blue-400"></i>
+                        </div>
+                        <p class="text-sm font-semibold">Grievance Created</p>
+                        <p class="text-xs text-gray-500">{{ g.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+                    </div>
+                    {% if g.status.value != 'submitted' %}
+                    <div class="relative pl-10">
+                        <div class="absolute left-0 top-1 w-9 h-9 bg-yellow-500/10 rounded-full border border-yellow-500/30 flex items-center justify-center z-10">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 text-yellow-400"></i>
+                        </div>
+                        <p class="text-sm font-semibold">Status Updated: {{ g.status.value|capitalize }}</p>
+                        <p class="text-xs text-gray-500">By Officer</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Actions -->
+        <div class="space-y-6">
+            {% if user.role.value in ['admin', 'officer'] %}
+            <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 shadow-sm">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-gray-500"></i> Take Action
+                </h3>
+                <form action="/grievances/{{ g.id }}/update" method="post" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Update Status</label>
+                        <select name="status" class="w-full bg-[#0f172a] border border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:border-purple-500 focus:outline-none transition-all text-white">
+                            <option value="submitted" {% if g.status.value == 'submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="in_progress" {% if g.status.value == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if g.status.value == 'resolved' %}selected{% endif %}>Resolved</option>
+                            <option value="rejected" {% if g.status.value == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Resolution Note</label>
+                        <textarea name="resolution_note" rows="4" class="w-full bg-[#0f172a] border border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:border-purple-500 focus:outline-none transition-all text-white resize-none" placeholder="Explain the resolution or reason for rejection...">{{ g.resolution_note if g.resolution_note else '' }}</textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-600/20">
+                        Update Grievance
+                    </button>
+                </form>
+            </div>
+            
+            {% if user.role.value == 'admin' and not g.assigned_to %}
+            <div class="bg-[#020617] p-6 rounded-2xl border border-gray-800 shadow-sm">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5 text-gray-500"></i> Assign Case
+                </h3>
+                <form action="/grievances/{{ g.id }}/assign" method="post" class="space-y-4">
+                    <select name="officer_id" required class="w-full bg-[#0f172a] border border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:border-purple-500 focus:outline-none transition-all text-white">
+                        <option value="">Select Officer...</option>
+                        {% for off in officers %}
+                        <option value="{{ off.id }}">{{ off.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-sm font-medium transition-all">
+                        Assign Officer
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- User side info -->
+            <div class="bg-purple-600/5 p-6 rounded-2xl border border-purple-500/20 shadow-sm">
+                <h3 class="font-bold text-purple-400 mb-2 flex items-center gap-2">
+                    <i data-lucide="info" class="w-5 h-5"></i> What's next?
+                </h3>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    An officer will review your grievance and update its status. You will receive notifications here for any updates.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
