@@ -129,6 +129,6 @@ def register(
 
 @router.get("/logout")
 def logout():
-    response = RedirectResponse(url="/login", status_code=302)
+    response = RedirectResponse(url="/", status_code=302)
     response.delete_cookie("user_id")
     return response
