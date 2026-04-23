@@ -58,13 +58,13 @@ def dashboard_page(request: Request, db: Session = Depends(get_db)):
     user_id = request.cookies.get("user_id")
 
     if not user_id:
-        return render(request, "auth/login.html")
+        return RedirectResponse("/login")
 
     stmt = select(User).where(User.id == int(user_id))
     user = db.execute(stmt).scalar_one_or_none()
 
     if not user:
-        return render(request, "auth/login.html")
+        return RedirectResponse("/login")
     
     if user.role == UserRole.ADMIN:
         return RedirectResponse("/admin/dashboard")

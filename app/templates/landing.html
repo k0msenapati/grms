@@ -26,7 +26,18 @@
                 <a href="#features" class="hover:text-purple-400 transition-colors">Features</a>
                 <a href="#how-it-works" class="hover:text-purple-400 transition-colors">How it Works</a>
                 <div class="flex items-center gap-4 ml-4">
-                    <a href="/login" class="px-4 py-2 rounded-lg border border-gray-700 hover:border-purple-500 transition-all">Login</a>
+                    <div class="relative group">
+                        <button class="px-4 py-2 rounded-lg border border-gray-700 hover:border-purple-500 transition-all flex items-center gap-2">
+                            Login <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-[#020617] border border-gray-800 rounded-xl shadow-2xl opacity-0 invisible transition-all duration-200 z-[60]">
+                            <div class="p-2">
+                                <a href="/login/admin" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors">Admin Login</a>
+                                <a href="/login/officer" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors">Officer Login</a>
+                                <a href="/login/user" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors">User Login</a>
+                            </div>
+                        </div>
+                    </div>
                     <a href="/register" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-all shadow-lg shadow-purple-600/20">Get Started</a>
                 </div>
             </nav>
@@ -55,9 +66,18 @@
                 <a href="/register" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20">
                     File a Grievance
                 </a>
-                <a href="/login" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-gray-700 hover:border-purple-500 bg-[#020617]/50 font-semibold text-lg transition-all">
-                    Track Status
-                </a>
+                <div class="relative group w-full sm:w-auto">
+                    <button class="w-full sm:w-auto px-8 py-4 rounded-xl border border-gray-700 hover:border-purple-500 bg-[#020617]/50 font-semibold text-lg transition-all flex items-center justify-center gap-2">
+                        Login <i data-lucide="chevron-down"></i>
+                    </button>
+                    <div class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-[#020617] border border-gray-800 rounded-xl shadow-2xl opacity-0 invisible transition-all duration-200 z-[60]">
+                        <div class="p-2">
+                            <a href="/login/admin" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors text-base text-left">Admin Login</a>
+                            <a href="/login/officer" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors text-base text-left">Officer Login</a>
+                            <a href="/login/user" class="block px-4 py-2 hover:bg-purple-600/10 hover:text-purple-400 rounded-lg transition-colors text-base text-left">User Login</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Trust Badge -->
@@ -124,6 +144,26 @@
 
     <script>
         lucide.createIcons();
+
+        // Dropdown toggle logic
+        document.querySelectorAll('.relative.group').forEach(group => {
+            const button = group.querySelector('button');
+            const menu = group.querySelector('.absolute');
+            
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.classList.toggle('invisible');
+                menu.classList.toggle('opacity-0');
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', () => {
+            document.querySelectorAll('.relative.group .absolute').forEach(menu => {
+                menu.classList.add('invisible');
+                menu.classList.add('opacity-0');
+            });
+        });
     </script>
 </body>
 </html>
